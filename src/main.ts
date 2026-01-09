@@ -1,15 +1,31 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
-
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Habilitar validación global
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // Elimina propiedades no definidas en el DTO
+      forbidNonWhitelisted: true, // Lanza error si hay propiedades extras
+      transform: true, // Transforma los tipos automáticamente
+    }),
+  );
+
+  // Configurar CORS
   app.enableCors({
-    origin: '*', // para pruebas (luego se restringe)
+    origin: [
+      'http://localhost:4200', // Angular local
+      'https://tu-dominio-vercel.vercel.app', // Reemplaza con tu dominio de Vercel
+    ],
     methods: 'GET,POST,PUT,PATCH,DELETE',
+    credentials: true,
   });
 
-  await app.listen(3000);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`Aplicación corriendo en puerto ${port}`);
 }
 bootstrap();
