@@ -32,6 +32,55 @@ export class ProductsService {
       price: 120,
       category: 'Accesorios'
     },
+    {
+      id: 4,
+      name: 'Monitor',
+      description: 'Monitor 27 pulgadas',
+      price: 300,
+      category: 'Electrónica'
+    },
+    {
+      id: 5,
+      name: 'Impresora',
+      description: 'Impresora multifuncional',
+      price: 200,
+      category: 'Oficina'
+    },
+    {
+      id: 6,
+      name: 'Auriculares',
+      description: 'Auriculares con cancelación de ruido',
+      price: 180,
+      category: 'Audio'
+    },
+    {
+      id: 7,
+      name: 'Cámara',
+      description: 'Cámara digital de 24MP',
+      price: 400,
+      category: 'Fotografía'
+    },
+    {
+      id: 8,
+      name: 'Smartphone',
+      description: 'Smartphone de última generación',
+      price: 800,
+      category: 'Electrónica'
+    },
+    {
+      id: 9,
+      name: 'Tablet',
+      description: 'Tablet de 10 pulgadas',
+      price: 500,
+      category: 'Electrónica'
+    },
+    {
+      id: 10,
+      name: 'Router',
+      description: 'Router inalámbrico de alta velocidad',
+      price: 100,
+      category: 'Redes'
+    }
   ];
 
   findAll(): Product[] {
