@@ -18,7 +18,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:4200', // Angular local
-      'https://tu-dominio-vercel.vercel.app', // Reemplaza con tu dominio de Vercel
+      'https://products-app-khaki.vercel.app', // Reemplaza con tu dominio de Vercel
     ],
     methods: 'GET,POST,PUT,PATCH,DELETE',
     credentials: true,
