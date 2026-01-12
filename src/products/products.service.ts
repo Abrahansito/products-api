@@ -105,8 +105,9 @@ export class ProductsService {
   }
 
   create(productData: Omit<Product, 'id'>): Product {
+    const nextId = this.products.length > 0 ? Math.max(...this.products.map(p => p.id)) + 1 : 1;
     const newProduct: Product = {
-      id: Date.now(), // En producción usa UUID o ID de DB
+      id: nextId, // Asignar el siguiente ID disponible
       name: productData.name,
       description: productData.description,
       price: productData.price,
