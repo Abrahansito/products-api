@@ -15,8 +15,11 @@ import { User } from './users/entities/user.entity';
       //Cadena de conexión de la base de datos
       url: 'postgresql://postgres:proyecto123@@db.wzjpghhnmcxhdoontrgj.supabase.co:5432/postgres', 
       entities: [User], //Listamos las tablas (Entidades)
-      synchronize: true, //True solo en desarrollo (crea las tablas automáticamente)
+      synchronize: false, //True solo en desarrollo (crea las tablas automáticamente)
       ssl: { rejectUnauthorized: false }, //Requerido por Supabase para conexión segura
+      extra:{
+        family: 4,  
+      }
     }),
 
     //Módulos
