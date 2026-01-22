@@ -107,7 +107,7 @@ export class ProductsService {
   create(productData: Omit<Product, 'id'>): Product {
     const nextId = this.products.length > 0 ? Math.max(...this.products.map(p => p.id)) + 1 : 1;
     const newProduct: Product = {
-      id: nextId, // Asignar el siguiente ID disponible
+      id: nextId, //Asignar el siguiente ID disponible
       name: productData.name,
       description: productData.description,
       price: productData.price,
@@ -127,7 +127,7 @@ export class ProductsService {
     this.products[index] = {
       ...this.products[index],
       ...productData,
-      id, // Mantener el ID original
+      id, //Mantener el ID original
     };
 
     return this.products[index];
@@ -139,7 +139,6 @@ export class ProductsService {
     if (index === -1) {
       throw new NotFoundException(`Producto con ID ${id} no encontrado`);
     }
-
     this.products.splice(index, 1);
     return { message: 'Producto eliminado exitosamente' };
   }

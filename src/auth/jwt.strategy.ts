@@ -7,11 +7,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
       secretOrKey: 'superSecretKey',
     });
   }
 
   async validate(payload: any) {
-    return { username: payload.username };
+    //Esto es lo que se inyecta en "req.user"
+    return { userId: payload.sub, email: payload.email, role: payload.role };
   }
 }
