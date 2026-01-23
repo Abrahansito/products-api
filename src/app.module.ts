@@ -10,7 +10,7 @@ import { User } from './users/entities/user.entity';
 @Module({
   imports: [
     //Configuración de la base de datos supabase
-    TypeOrmModule.forRoot({
+   /*  TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'db.wzjpghhnmcxhdoontrgj.supabase.co',
       port: 5432,
@@ -21,7 +21,7 @@ import { User } from './users/entities/user.entity';
       synchronize: false, //True solo en desarrollo (crea las tablas automáticamente)
       ssl: { rejectUnauthorized: false }, //Requerido por Supabase para conexión segura
     }),
-
+ */
     //Módulos
     ProductsModule,
     AuthModule,
