@@ -12,8 +12,11 @@ import { User } from './users/entities/user.entity';
     //Configuración de la base de datos supabase
     TypeOrmModule.forRoot({
       type: 'postgres',
-      //Cadena de conexión de la base de datos
-      url: 'postgresql://postgres:proyecto123@@db.wzjpghhnmcxhdoontrgj.supabase.co:5432/postgres', 
+      host: '@db.wzjpghhnmcxhdoontrgj.supabase.co',
+      port: 5432,
+      username: 'postgres',
+      password: 'proyecto123@',
+      database: 'postgres',
       entities: [User], //Listamos las tablas (Entidades)
       synchronize: false, //True solo en desarrollo (crea las tablas automáticamente)
       ssl: { rejectUnauthorized: false }, //Requerido por Supabase para conexión segura
