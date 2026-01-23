@@ -12,7 +12,7 @@ import { User } from './users/entities/user.entity';
     //Configuración de la base de datos supabase
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: '@db.wzjpghhnmcxhdoontrgj.supabase.co',
+      host: 'db.wzjpghhnmcxhdoontrgj.supabase.co',
       port: 5432,
       username: 'postgres',
       password: 'proyecto123@',
