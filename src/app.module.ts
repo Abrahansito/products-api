@@ -20,9 +20,6 @@ import { User } from './users/entities/user.entity';
       entities: [User], //Listamos las tablas (Entidades)
       synchronize: false, //True solo en desarrollo (crea las tablas automáticamente)
       ssl: { rejectUnauthorized: false }, //Requerido por Supabase para conexión segura
-      extra:{
-        family: 4,  
-      }
     }),
 
     //Módulos
