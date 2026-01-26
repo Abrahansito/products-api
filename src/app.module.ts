@@ -7,6 +7,7 @@ import { ProductsModule } from './products/products.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
+import { Product } from './products/entities/product.entity';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { User } from './users/entities/user.entity';
       username: 'postgres.wzjpghhnmcxhdoontrgj',
       password: 'proyecto123@',
       database: 'postgres',
-      entities: [User], //Listamos las tablas (Entidades)
+      entities: [User, Product],  //Listamos las tablas (Entidades)
       synchronize: false, //True solo en desarrollo (crea las tablas automáticamente)
       ssl: { rejectUnauthorized: false }, //Requerido por Supabase para conexión segura
     }),
