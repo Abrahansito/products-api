@@ -1,145 +1,76 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-}
+import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, ILike } from 'typeorm';
+import { Product } from './entities/product.entity';
+import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductsService {
-  private products: Product[] = [
-    { 
-      id: 1, 
-      name: 'Laptop', 
-      description: 'Laptop de alta gama',
-      price: 1500,
-      category: 'Electrónica'
-    },
-    { 
-      id: 2, 
-      name: 'Mouse', 
-      description: 'Mouse inalámbrico',
-      price: 50,
-      category: 'Accesorios'
-    },
-    { 
-      id: 3, 
-      name: 'Teclado', 
-      description: 'Teclado mecánico RGB',
-      price: 120,
-      category: 'Accesorios'
-    },
-    {
-      id: 4,
-      name: 'Monitor',
-      description: 'Monitor 27 pulgadas',
-      price: 300,
-      category: 'Electrónica'
-    },
-    {
-      id: 5,
-      name: 'Impresora',
-      description: 'Impresora multifuncional',
-      price: 200,
-      category: 'Oficina'
-    },
-    {
-      id: 6,
-      name: 'Auriculares',
-      description: 'Auriculares con cancelación de ruido',
-      price: 180,
-      category: 'Audio'
-    },
-    {
-      id: 7,
-      name: 'Cámara',
-      description: 'Cámara digital de 24MP',
-      price: 400,
-      category: 'Fotografía'
-    },
-    {
-      id: 8,
-      name: 'Smartphone',
-      description: 'Smartphone de última generación',
-      price: 800,
-      category: 'Electrónica'
-    },
-    {
-      id: 9,
-      name: 'Tablet',
-      description: 'Tablet de 10 pulgadas',
-      price: 500,
-      category: 'Electrónica'
-    },
-    {
-      id: 10,
-      name: 'Router',
-      description: 'Router inalámbrico de alta velocidad',
-      price: 100,
-      category: 'Redes'
-    }
-  ];
+  
+  constructor(
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+  ) {}
 
-  findAll(): Product[] {
-    return this.products;
+  async create(createProductDto: CreateProductDto) {
+    try {
+      const product = this.productRepository.create(createProductDto);
+      await this.productRepository.save(product);
+      return product;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Error al crear el producto');
+    }
   }
 
-  findOne(id: number): Product {
-    const product = this.products.find(p => p.id === id);
+  findAll() {
+    return this.productRepository.find({
+      order: { created_at: 'DESC' } // Ordenar por fecha, más nuevos primero
+    });
+  }
+
+  async findOne(id: number) {
+    const product = await this.productRepository.findOneBy({ id });
     if (!product) {
       throw new NotFoundException(`Producto con ID ${id} no encontrado`);
     }
     return product;
   }
 
-  search(query: string): Product[] {
-    const lowerQuery = query.toLowerCase();
-    return this.products.filter(p =>
-      p.name.toLowerCase().includes(lowerQuery) ||
-      p.description.toLowerCase().includes(lowerQuery) ||
-      p.category.toLowerCase().includes(lowerQuery)
-    );
+  // Buscador avanzado
+  async search(term: string) {
+    return this.productRepository.find({
+      where: [
+        { name: ILike(`%${term}%`) },
+        { description: ILike(`%${term}%`) },
+        { category: ILike(`%${term}%`) }
+      ]
+    });
   }
 
-  create(productData: Omit<Product, 'id'>): Product {
-    const nextId = this.products.length > 0 ? Math.max(...this.products.map(p => p.id)) + 1 : 1;
-    const newProduct: Product = {
-      id: nextId, //Asignar el siguiente ID disponible
-      name: productData.name,
-      description: productData.description,
-      price: productData.price,
-      category: productData.category,
-    };
-    this.products.push(newProduct);
-    return newProduct;
-  }
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    // preload busca primero si existe, y si existe, fusiona los datos nuevos
+    const product = await this.productRepository.preload({
+      id: id,
+      ...updateProductDto,
+    });
 
-  update(id: number, productData: Partial<Omit<Product, 'id'>>): Product {
-    const index = this.products.findIndex(p => p.id === id);
-    
-    if (index === -1) {
+    if (!product) {
       throw new NotFoundException(`Producto con ID ${id} no encontrado`);
     }
 
-    this.products[index] = {
-      ...this.products[index],
-      ...productData,
-      id, //Mantener el ID original
-    };
-
-    return this.products[index];
+    try {
+      await this.productRepository.save(product);
+      return product;
+    } catch (error) {
+      throw new InternalServerErrorException('Error al actualizar producto');
+    }
   }
 
-  delete(id: number): { message: string } {
-    const index = this.products.findIndex(p => p.id === id);
-    
-    if (index === -1) {
-      throw new NotFoundException(`Producto con ID ${id} no encontrado`);
-    }
-    this.products.splice(index, 1);
+  async delete(id: number) {
+    const product = await this.findOne(id); // Reutilizamos findOne para verificar que existe
+    await this.productRepository.remove(product);
     return { message: 'Producto eliminado exitosamente' };
   }
 }

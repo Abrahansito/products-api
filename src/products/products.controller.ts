@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, ParseIntPipe, HttpCode, HttpStatus,} from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, HttpCode, HttpStatus, ParseIntPipe} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import type { Product } from './interfaces/product.interface';
+import { Product } from './entities/product.entity';
 
 @UseGuards(JwtAuthGuard)
 @Controller('products')
@@ -11,12 +11,12 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
-  findAll(): Product[] {
+  async findAll(): Promise<Product[]> { //Ahora es async y devuelve Promise
     return this.productsService.findAll();
   }
 
   @Get('search')
-  search(@Query('q') query: string): Product[] {
+  async search(@Query('q') query: string): Promise<Product[]> {
     if (!query) {
       return this.productsService.findAll();
     }
@@ -24,27 +24,27 @@ export class ProductsController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number): Product {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Product> { 
     return this.productsService.findOne(id);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createProductDto: CreateProductDto): Product {
+  async create(@Body() createProductDto: CreateProductDto): Promise<Product> {
     return this.productsService.create(createProductDto);
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProductDto: UpdateProductDto,
-  ): Product {
+  ): Promise<Product> {
     return this.productsService.update(id, updateProductDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  delete(@Param('id', ParseIntPipe) id: number): { message: string } {
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<{ message: string }> {
     return this.productsService.delete(id);
   }
 }

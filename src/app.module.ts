@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -9,6 +10,10 @@ import { User } from './users/entities/user.entity';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true, // disponible en toda la app
+    }),
+    
     //Configuración de la base de datos supabase
     TypeOrmModule.forRoot({
       type: 'postgres',
