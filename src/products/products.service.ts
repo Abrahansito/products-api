@@ -26,7 +26,7 @@ export class ProductsService {
 
   findAll() {
     return this.productRepository.find({
-      order: { created_at: 'DESC' } // Ordenar por fecha, más nuevos primero
+      order: { created_at: 'ASC' } // Ordenar por fecha, más nuevos primero
     });
   }
 
